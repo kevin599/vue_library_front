@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body{
+background:#f6f2b8;
+}
+
+#baymax{
+margin: 50px 0 auto;
+height: 600px;
+}
+
+#head, #torso, #belly, #cover, #left-arm, #right-arm,#left-leg, #right-leg{
+background: #fff;
+margin: 0 auto;
+}
+
+#head{
+height: 64px;
+width: 100px;
+border-radius: 50%;
+margin-bottom: -20px;
+border-bottom: 3px solid #d7d8c4;
+position: relative;
+border: 2px solid #000000;
+}
+
+#eye, #eye2{
+width: 13px;
+height: 13px;
+background: #282828;
+border-radius: 50%;
+position: relative;
+top: 30px;
+left: 27px;
+}
+
+#eye2{
+top: 17px;
+left: 69px;
+}
+
+#mouth{
+width: 38px;
+height: 1.5px;
+background: #282828;
+position: relative;
+left: 34px;
+top: 10px;
+}
+
+#torso, #belly{
+height: 200px;
+width: 190px;
+border-radius: 55%;
+border: 3px solid #000000;
+border-top: none;
+}
+
+#belly{
+height: 300px;
+width: 245px;
+margin-top: -140px;
+border-radius: 46%;
+}
+
+#cover{
+width: 190px;
+height: 150px;
+position: relative;
+top: -20px;
+border-radius: 50%;
+}
+
+#heart{
+width: 25px;
+height: 25px;
+border-radius: 50%;
+position: relative;
+box-shadow: 2px 2px 2px #ded7ae;
+right: -115px;
+top: 40px;
+z-index: 111;
+border: 1.5px solid #000000;
+}
+
+#left-arm, #right-arm{
+height: 270px;
+width: 120px;
+border-radius: 50%;
+position: relative;
+top: -350px;
+left: -100px;
+transform: rotate(20deg);
+z-index: -5;
+border: 2px solid #000000;
+}
+
+#right-arm{
+transform: rotate(-20deg);
+left: 100px;
+top: -620px;
+}
+
+
+#left-leg, #right-leg{
+height: 170px;
+width: 90px;
+border-radius: 40% 30% 10px 45%;
+position: relative;
+top: -640px;
+left: -45px;
+transform: rotate(-1deg);
+z-index: -2;
+border: 2px solid #000000;
+}
+
+#right-leg{
+border-radius: 30% 40% 45% 10px;
+top: -810px;
+left: 50px;
+transform: rotate(1deg);
+}
+
+</style>
+<title>Baymax</title>
+</head>
+<body>
+<div id="baymax">
+<div id="head">
+<div id="eye"></div>
+<div id="eye2"></div>
+<div id="mouth"></div>
+</div>
+<div id="torso">
+<div id="heart"></div>
+</div>
+<div id="belly">
+<div id="cover"></div>
+</div>
+<div id="left-arm">
+
+</div>
+<div id="right-arm">
+
+</div>
+<div id="left-leg"></div>
+<div id="right-leg"></div>
+
+<script type="text/javascript">
+    window.alert = function(text) {
+
+        //实现alert
+        var div = document.createElement("div");
+        div.style.backgroundColor = " #22b9ff";
+        div.style.color = " #fff";
+        div.style.position = " fixed";
+        div.style.zIndex = 9999999;
+        div.style.height = " 60px";
+        div.style.top = " 10%";
+        div.style.left = "50%";
+        div.style.lineHeight = " 60px";
+        div.style.borderRadius = " 4px";
+        div.style.fontSize = " 20px";
+        div.style.textAlign = "center";
+        div.style.padding = "0 10px";
+        div.className = "animated  bounceInDown";
+        div.id = "alert";
+        div.innerHTML = text;
+        document.getElementsByTagName("body")[0].appendChild(div);
+        var selfObj = document.getElementById("alert");
+        //动态调整位置
+        var alertWidth = window.getComputedStyle(selfObj, null).width;
+        div.style.marginLeft = -parseInt(alertWidth) / 2 + "px";
+        setTimeout(function() {
+            document.getElementsByTagName("body")[0].removeChild(div);
+        }, 30000);
+    }
+    alert("这是自定义的alert");
+    </script>
+</body>
+</html>
