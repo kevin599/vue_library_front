@@ -97,6 +97,12 @@ export default {
             validator: validatePass,
             trigger: "blur",
           },
+          {
+            min: 6,
+            max: 12,
+            message: "密码长度在 6 到 12 个字符",
+            trigger: "blur",
+          },
         ],
         checkPass: [
           {

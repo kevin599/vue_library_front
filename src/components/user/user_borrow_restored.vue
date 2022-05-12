@@ -81,14 +81,20 @@
         <el-row class="tabletop" style="text-align: center">
           <el-col>
             <el-table
-            :data="records.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+              :data="
+                records.slice(
+                  (currentPage - 1) * pageSize,
+                  currentPage * pageSize
+                )
+              "
               style="width: 100%; text-align: center"
               height="510"
               border
               stripe
               header-cell-style="{text-align:center;background-color:#FAFAFA;}"
             >
-              <el-table-column prop="restore_id" label="Restore ID"> </el-table-column>
+              <el-table-column prop="restore_id" label="Restore ID">
+              </el-table-column>
               <el-table-column prop="user_id" label="用户ID"> </el-table-column>
               <el-table-column prop="user_name" label="姓名"> </el-table-column>
               <el-table-column prop="name" label="书名"> </el-table-column>
@@ -98,13 +104,18 @@
               </el-table-column>
               <el-table-column prop="restore_realTime" label="实际归还时间">
               </el-table-column>
-              <el-table-column prop="pass_day" label="逾期天数"> </el-table-column>
+              <el-table-column prop="pass_day" label="逾期天数">
+              </el-table-column>
             </el-table>
             <div class="block">
-                    <el-pagination :total="records.length" :current-page="currentPage" :page-size="pageSize"
-                     @current-change="handleCurrentChange"
-                     layout="total,prev,pager,next,jumper"></el-pagination>
-                </div>
+              <el-pagination
+                :total="records.length"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                @current-change="handleCurrentChange"
+                layout="total,prev,pager,next,jumper"
+              ></el-pagination>
+            </div>
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -141,7 +152,8 @@ export default {
       formreturn: {},
       title: "",
       types: "",
-      pageSize: 4,
+      pageSize: 8,
+      // pageSize: 4,
       currentPage: 1,
       temp: {},
     }
@@ -215,7 +227,7 @@ export default {
     },
     // 还书
     handleReturn(index, row) {
-      this.$confirm("校队信息后确定还书?", "提示", {
+      this.$confirm("校对信息后确定还书?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -228,7 +240,9 @@ export default {
           moment(this.temp.restore_realTime).diff(row.restore_time, "days") > 0
             ? moment(this.temp.restore_realTime).diff(row.restore_time, "days")
             : 0
-        console.log(this.temp)
+            this.temp.restore_time = row.restore_time
+            this.temp.borrow_time = row.borrow_time
+        console.log("line231,this.temp:", this.temp)
         // this.$http
         //   .post("http://localhost:3000/bookstudent/returnbook", {
         //     user_id: user_id,
@@ -243,7 +257,7 @@ export default {
               type: "success",
               message: "还书成功!",
             })
-            this.updateBookNumadd(id)
+            this.updateBookNumadd(this.temp.id)
               .then(function (data) {
                 console.log("加", data)
               })
@@ -265,12 +279,13 @@ export default {
 
     handleClick(tab, event) {
       if (this.activeName == "first") {
-        var params = { id: sessionStorage.getItem("id") }
+        let params = { id: sessionStorage.getItem("id") }
         console.log(params)
         this.findStudentRecord(params)
       } else if (this.activeName == "second") {
-        var params = { keys: sessionStorage.getItem("id") }
+        let params = { keys: sessionStorage.getItem("id") }
         console.log(params)
+        // this.studentQueryRestore(params)
         this.studentFindRestore(params)
       } else {
       }
@@ -280,6 +295,7 @@ export default {
       "findQueryBook",
       "findQueryBook1",
       "findStudentRecord",
+      "studentQueryRestore",
       "findQueryStudent",
       "saveborrowbook1",
       "updateBookNum",

@@ -26,6 +26,34 @@ export default {
         console.log(error)
       })
     },
+
+    toExcel(context) {
+      axios.get('http://localhost:3000/book/exportExcel', {}, { responseType: 'buffer' }).then((res) => {
+        console.log('返回的res', res);
+        function base64ToArrayBuffer(base64) {
+          var binary_string = window.atob(base64);
+          var len = binary_string.length;
+          var bytes = new Uint8Array(len);
+          for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+          }
+          return bytes.buffer;
+        }
+        const blob = new Blob([base64ToArrayBuffer(res.data)], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+        });
+        let downloadElement = document.createElement('a');
+        let href = window.URL.createObjectURL(blob);
+        downloadElement.href = href;
+        downloadElement.download = `书籍汇总表.xlsx`;
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+        document.body.removeChild(downloadElement);
+        window.URL.revokeObjectURL(href);
+        
+      })
+    },
+
     // 模糊查询(通过书名或作者)
     findQueryBook(context, params) {
       axios.get('http://localhost:3000/book/query', { params }).then(({ data }) => {

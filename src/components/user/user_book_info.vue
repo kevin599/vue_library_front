@@ -11,7 +11,7 @@
       </el-input>
     </el-row>
     <template>
-      <el-table
+      <!-- <el-table
         :data="
           books.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
@@ -42,8 +42,8 @@
         </el-table-column>
         <el-table-column prop="shelf" label="书架" width="120">
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="150">
-          <template slot-scope="scope">
+        <el-tpable-column fixed="right" label="操作" width="150">
+          <temlate slot-scope="scope">
             <el-button-group>
               <el-button
                 type="success"
@@ -54,7 +54,89 @@
             </el-button-group>
           </template>
         </el-table-column>
+      </el-table> -->
+
+      <!-- 改成展开行 -->
+      <el-table
+        stripe
+        :data="
+          books.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        style="width: 100%"
+      >
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form
+              label-position="left"
+              inline
+              class="demo-table-expand zhankai"
+            >
+              <el-form-item label="图书ID：" class="lie">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="图书名称：" class="lie">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="作者：" class="lie">
+                <span>{{ props.row.author }}</span>
+              </el-form-item>
+              <el-form-item label="ISBN码：" class="lie">
+                <span>{{ props.row.ISBN }}</span>
+              </el-form-item>
+              <el-form-item label="出版社：" class="lie">
+                <span>{{ props.row.publisher }}</span>
+              </el-form-item>
+              <el-form-item label="入库时间：" class="lie">
+                <span>{{ props.row.timeIn }}</span>
+              </el-form-item>
+              <el-form-item label="图书价格：" class="lie">
+                <span>{{ props.row.price }}</span>
+              </el-form-item>
+              <el-form-item label="图书简介：" class="lie">
+                <span>{{ props.row.message }}</span>
+              </el-form-item>
+              <el-form-item label="图书分类：" class="lie">
+                <span>{{ props.row.category }}</span>
+              </el-form-item>
+              <el-form-item label="书架号：" class="lie">
+                <span>{{ props.row.shelf }}</span>
+              </el-form-item>
+              <el-form-item label="书籍总量：" class="lie">
+                <span>{{ props.row.total_num }}</span>
+              </el-form-item>
+              <el-form-item label="剩余书籍量：" class="lie">
+                <span>{{ props.row.cur_num }}</span>
+              </el-form-item>
+              <el-form-item label="借出书籍量：" class="lie">
+                <span>{{ props.row.borrow_num }}</span>
+              </el-form-item>
+            </el-form>
+            <!--  -->
+
+            <!--  -->
+          </template>
+        </el-table-column>
+        <el-table-column label="图书ID" prop="id" width="100">
+        </el-table-column>
+        <el-table-column label="图书名称" prop="name"> </el-table-column>
+        <el-table-column label="图书作者" prop="author"> </el-table-column>
+        <el-table-column label="ISBN码" prop="ISBN" width="200">
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="300">
+          <temlate slot-scope="scope">
+            <el-button-group>
+              <el-button
+                type="success"
+                icon="el-icon-edit"
+                @click="handleEdit(scope.$index, scope.row)"
+                >借阅图书</el-button
+              >
+            </el-button-group>
+          </temlate>
+        </el-table-column>
       </el-table>
+      <!-- /展开行 -->
+
       <div class="block">
         <el-pagination
           :total="books.length"
@@ -149,80 +231,8 @@ export default {
       },
       dialogFormVisible: false,
       keywords: "",
-      pageSize: 4,
+      pageSize: 10,
       currentPage: 1,
-      tableData: [
-        {
-          id: 1,
-          name: "看着日落",
-          author: "不想以后",
-          ISBN: "独自旅行",
-          publisher: "不要无奈",
-          timeIn: "不要哭，也不要逃",
-          number: "更不重要",
-          price: "请给我一点微笑",
-          message:
-            "好好默认情况下，Table 组件是不具有竖直方向的边框的，如果需要，可以使用border属性，它接受一个Boolean，设置为true即可启用。",
-          category: "missya",
-          shelf: "打不希勒图",
-        },
-        {
-          id: 2,
-          name: "看着日落",
-          author: "不想以后",
-          ISBN: "独自旅行",
-          publisher: "不要无奈",
-          timeIn: "不要哭，也不要逃",
-          number: "更不重要",
-          price: "请给我一点微笑",
-          message:
-            "好好默认情况下，Table 组件是不具有竖直方向的边框的，如果需要，可以使用border属性，它接受一个Boolean，设置为true即可启用。",
-          category: "missya",
-          shelf: "打不希勒图",
-        },
-        {
-          id: 3,
-          name: "看着日落",
-          author: "不想以后",
-          ISBN: "独自旅行",
-          publisher: "不要无奈",
-          timeIn: "不要哭，也不要逃",
-          number: "更不重要",
-          price: "请给我一点微笑",
-          message:
-            "好好默认情况下，Table 组件是不具有竖直方向的边框的，如果需要，可以使用border属性，它接受一个Boolean，设置为true即可启用。",
-          category: "missya",
-          shelf: "打不希勒图",
-        },
-        {
-          id: 4,
-          name: "看着日落",
-          author: "不想以后",
-          ISBN: "独自旅行",
-          publisher: "不要无奈",
-          timeIn: "不要哭，也不要逃",
-          number: "更不重要",
-          price: "请给我一点微笑",
-          message:
-            "好好默认情况下，Table 组件是不具有竖直方向的边框的，如果需要，可以使用border属性，它接受一个Boolean，设置为true即可启用。",
-          category: "missya",
-          shelf: "打不希勒图",
-        },
-        {
-          id: 5,
-          name: "看着日落",
-          author: "不想以后",
-          ISBN: "独自旅行",
-          publisher: "不要无奈",
-          timeIn: "不要哭，也不要逃",
-          number: "更不重要",
-          price: "请给我一点微笑",
-          message:
-            "好好默认情况下，Table 组件是不具有竖直方向的边框的，如果需要，可以使用border属性，它接受一个Boolean，设置为true即可启用。",
-          category: "missya",
-          shelf: "打不希勒图",
-        },
-      ],
       rules: {
         name: [{ required: true, message: "请输入书籍名称", trigger: "blur" }],
         author: [
@@ -313,17 +323,17 @@ export default {
           console.log("id", id)
           this.updateBookNum(id)
             .then(function (data) {
-              vm.$message({
-                type: "success",
-                message: "图书当前数量修改成功！",
-              })
+              // vm.$message({
+              //   type: "success",
+              //   message: "图书当前数量修改成功！",
+              // })
             })
             .catch(function (error) {
               console.log("借书数量修改失败", error)
-              vm.$message({
-                type: "error",
-                message: "借书数量修改失败,请联系图书管理员!",
-              })
+              // vm.$message({
+              //   type: "error",
+              //   message: "借书数量修改失败,请联系图书管理员!",
+              // })
             })
         }
       }
@@ -348,7 +358,7 @@ export default {
       console.log(params)
       this.findQueryBook(params)
     },
-   
+
     ...mapActions([
       "findAllBook",
       "findQueryBook",
@@ -359,4 +369,25 @@ export default {
 }
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.zhankai .lie:nth-child(4n-2),
+.lie:nth-child(4n-3) {
+  background-color: hsl(0, 0%, 76%, 0.3);
+}
+.zhankai {
+  /* border: 1px solid hsl(0, 0%, 76%, 0.5); */
+  padding: 5px 25px;
+}
+</style>

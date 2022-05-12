@@ -11,8 +11,8 @@ export default {
     },
     mutations: {
         alterRecords(state, data) {
+            console.log('alterRecords', data);
             state.records = data
-            console.log('alterRecords', state.records);
         },
         //排序对象中的值
         sorttop(state, data) {
@@ -47,18 +47,19 @@ export default {
 
         //学生查询个人的还书记录
         studentFindRestore(context, params) {
+            console.log('line 50 restoneStore:', params);
             axios.get('http://localhost:3000/bookstudent/studentQueryRestore', { params }).then(({ data }) => {
-                console.log('line 41 borrowStore:', data);
+                console.log('line52 studentFindRestore ',data);
                 context.commit('alterRecords', data)
             }).catch((error) => {
                 console.log('管理员-模糊查询学生借阅记录', error)
             })
         },
 
-        
 
-        
-        
+
+
+
         // ------------------------------------------------------------------
         // 管理员-查找所有学生借阅记录
         // findAllRecords(context) {

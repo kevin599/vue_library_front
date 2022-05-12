@@ -5,6 +5,7 @@ import typeStore from './modules/booktypeStore'
 import bookstudentStore from './modules/borrowStore'
 import studentStore from './modules/studentinfoStore'
 import restoreStore from './modules/restoreStore'
+import loginStore from './modules/loginStore'
  
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -13,6 +14,7 @@ export default new Vuex.Store({
     bookstudentStore,
     studentStore,
     typeStore,
-    restoreStore
+    restoreStore,
+    loginStore
   }
 })

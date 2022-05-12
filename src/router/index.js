@@ -17,6 +17,7 @@ import UserBookInfo from '../components/user/user_book_info'
 import UserBorrowRestored from '../components/user/user_borrow_restored'
 import UserChangePsd from '../components/user/user_change_psd'
 import UserInfo from '../components/user/user_info'
+import Register from '../components/register'
 
 
 
@@ -30,13 +31,18 @@ const router = new VueRouter({
       redirect: '/login'  //在‘/’时 重定向到login页面
     },
     {
+      path: '/register',
+      component: Register
+    },
+    {
       path: '/login',
       component: Login
     },
     {
       path: '/home',
       component: Home,
-      redirect: '/admin_home',     //redirect所要重定向的路径要和路径注册的path相同,即redirect: '/welcome', 等于 path: '/welcome',
+      // redirect: '/admin_home',     //redirect所要重定向的路径要和路径注册的path相同,即redirect: '/welcome', 等于 path: '/welcome',
+      redirect: '/manage_book',     
       children: [
         {
           path: '/admin_home',

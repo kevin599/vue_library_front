@@ -1,8 +1,21 @@
 <template>
   <el-card class="box-card">
     <el-row style="margin-bottom: 20px">
+      <el-select
+        v-model="condition_value"
+        clearable
+        placeholder="请选择查询条件"
+      >
+        <el-option
+          v-for="item in conditions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <el-input
-        placeholder="请输入要查找的图书"
+        placeholder="请输入要查找的图书信息"
         prefix-icon="el-icon-search"
         v-model="keywords"
         @change="findQuery"
@@ -11,18 +24,24 @@
       </el-input>
       <el-button
         type="primary"
+        @click="toExcel1"
+        style="float: right; margin-right: 50px"
+        >导出excel</el-button
+      >
+      <el-button
+        type="primary"
         @click="addBook"
-        style="float: right; margin-right: 100px"
+        style="float: right; margin-right: 10px"
         >新书录入</el-button
       >
     </el-row>
     <template>
-      <el-table
+      <!-- <el-table
         :data="
           books.slice((currentPage - 1) * pageSize, currentPage * pageSize)
         "
         style="width: 100%"
-        height="600"
+        height="550"
         border
       >
         <el-table-column prop="id" label="ID" width="50"> </el-table-column>
@@ -64,7 +83,89 @@
             </el-button-group>
           </template>
         </el-table-column>
+      </el-table> -->
+
+      <!-- 改成展开行 -->
+      <el-table
+        stripe
+        :data="
+          books.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        "
+        style="width: 100%"
+      >
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form
+              label-position="left"
+              inline
+              class="demo-table-expand zhankai"
+            >
+              <el-form-item label="图书ID：" class="lie">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="图书名称：" class="lie">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="作者：" class="lie">
+                <span>{{ props.row.author }}</span>
+              </el-form-item>
+              <el-form-item label="ISBN码：" class="lie">
+                <span>{{ props.row.ISBN }}</span>
+              </el-form-item>
+              <el-form-item label="出版社：" class="lie">
+                <span>{{ props.row.publisher }}</span>
+              </el-form-item>
+              <el-form-item label="入库时间：" class="lie">
+                <span>{{ props.row.timeIn }}</span>
+              </el-form-item>
+              <el-form-item label="图书价格：" class="lie">
+                <span>{{ props.row.price }}</span>
+              </el-form-item>
+              <el-form-item label="图书简介：" class="lie">
+                <span>{{ props.row.message }}</span>
+              </el-form-item>
+              <el-form-item label="图书分类：" class="lie">
+                <span>{{ props.row.category }}</span>
+              </el-form-item>
+              <el-form-item label="书架号：" class="lie">
+                <span>{{ props.row.shelf }}</span>
+              </el-form-item>
+              <el-form-item label="书籍总量：" class="lie">
+                <span>{{ props.row.total_num }}</span>
+              </el-form-item>
+              <el-form-item label="剩余书籍量：" class="lie">
+                <span>{{ props.row.cur_num }}</span>
+              </el-form-item>
+              <el-form-item label="借出书籍量：" class="lie">
+                <span>{{ props.row.borrow_num }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column label="图书ID" prop="id" width="100">
+        </el-table-column>
+        <el-table-column label="图书名称" prop="name"> </el-table-column>
+        <el-table-column label="图书作者" prop="author"> </el-table-column>
+        <el-table-column label="ISBN码" prop="ISBN"> </el-table-column>
+        <el-table-column fixed="right" label="操作" width="150">
+          <template slot-scope="scope">
+            <el-button-group>
+              <el-button
+                type="success"
+                icon="el-icon-edit"
+                @click="handleEdit(scope.$index, scope.row)"
+              ></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.$index, scope.row)"
+              ></el-button>
+            </el-button-group>
+          </template>
+        </el-table-column>
       </el-table>
+      <!-- /展开行 -->
+
       <div class="block">
         <el-pagination
           :total="books.length"
@@ -164,6 +265,8 @@
               v-model="form.message"
               style="width: 400px"
               placeholder=""
+              type="textarea"
+              :rows="5"
             ></el-input>
           </el-form-item>
           <el-form-item label="书籍类目" prop="category">
@@ -214,10 +317,49 @@ export default {
   },
   data() {
     return {
+      condition_value: "",
+      conditions: [
+        {
+          value: "id",
+          label: "图书ID",
+        },
+        {
+          value: "author",
+          label: "作者",
+        },
+        {
+          value: "name",
+          label: "图书名称",
+        },
+        {
+          value: "ISBN",
+          label: "ISBN码",
+        },
+        {
+          value: "publisher",
+          label: "出版社",
+        },
+        {
+          value: "timeIn",
+          label: "入库时间",
+        },
+        {
+          value: "price",
+          label: "图书价格",
+        },
+        {
+          value: "category",
+          label: "图书分类",
+        },
+        {
+          value: "shelf",
+          label: "书架号",
+        },
+      ],
       editBookDialogVisible: false,
       form: {},
       keywords: "",
-      pageSize: 4,
+      pageSize: 10,
       currentPage: 1,
       title: "",
       picture: "",
@@ -347,10 +489,15 @@ export default {
   methods: {
     //图书查找
     findQuery() {
-      var params = { keys: this.keywords }
+      var params = { keys: this.keywords, condition: this.condition_value }
       console.log(params)
       this.findQueryBook(params)
+      if (this.keywords == "") {
+        this.condition_value = ""
+        this.findAllBook()
+      }
     },
+
     handleCurrentChange: function (currentPage) {
       this.currentPage = currentPage
     },
@@ -455,6 +602,20 @@ export default {
       })
     },
 
+    toExcel1() {
+      this.toExcel()
+        .then(function (data) {
+          // console.log(data)
+          // if (data.status_code == 1) {
+          //   console.log("download")
+          //   window.open("http://localhost:3000/excel/book_info", "_blank")
+          // }
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
+
     addBook() {
       this.editBookDialogVisible = true
       this.title = "录入新书"
@@ -518,6 +679,7 @@ export default {
         })
     },
     ...mapActions([
+      "toExcel",
       "findAllBook",
       "findQueryBook",
       "batchDeleteBook",
@@ -529,4 +691,28 @@ export default {
 }
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.demo-table-expand .el-form-item__label {
+  color: #99a9bf;
+}
+.zhankai .lie:nth-child(4n-2),
+.lie:nth-child(4n-3) {
+  background-color: hsl(0, 0%, 76%, 0.5);
+}
+.demo-table-expand .el-form-item:nth-child(even) {
+  border-left: 1px solid black;
+  /* border-right: 1px solid black; */
+}
+</style>

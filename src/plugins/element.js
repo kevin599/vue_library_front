@@ -37,6 +37,8 @@ import {
     Calendar,
     Tabs,
     TabPane,
+    Radio,
+    Divider,
 } from 'element-ui'
 
 
@@ -80,3 +82,6 @@ Vue.use(CarouselItem);
 Vue.use(Calendar);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Radio);
+Vue.use(Divider);
+

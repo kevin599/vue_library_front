@@ -12,5 +12,7 @@
 
 
 <style>
-
+.el-form-item--feedback .el-input__validateIcon {
+    color: #67c23a;
+}
 </style>

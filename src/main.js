@@ -7,7 +7,9 @@ import './assets/css/font_2902601_t0zdbcodwpi/iconfont.css'
 import axios from 'axios'
 import Vuex from 'vuex'
 import store from './store'
+import SIdentify from './components/Identify.vue';
 
+// axios.defaults.withCredentials = true; // 允许请求的时候带上cookie
 Vue.prototype.$http = axios
 // 配置请求的根路径
 // axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
@@ -17,6 +19,7 @@ Vue.prototype.$http = axios
 // })
 Vue.use(Vuex)
 Vue.config.productionTip = false
+Vue.component("SIdentify",SIdentify);
 
 new Vue({
   store,

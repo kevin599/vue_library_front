@@ -18,7 +18,7 @@ export default {
 		//所有的
 		findAllStudents(context) {
 			axios.get('http://localhost:3000/student/findAll').then(({ data }) => {
-				console.log(data);
+				// console.log(data);
 				context.commit('alterStudents', data);
 			})
 		},
@@ -37,7 +37,7 @@ export default {
 		// 更新学生信息
 		updateStudent(context, form) {
 			return new Promise(function (resolve, reject) {
-				axios.post('http://localhost:3000/student/update', form).then((result) => {
+				axios.post('http://localhost:3000/student/updateinfo', form).then((result) => {
 					context.dispatch('findAllStudents');
 					resolve(result);
 					console.log("updateStudent:", result);
@@ -48,6 +48,7 @@ export default {
 		},
 		// 删除学生信息
 		batchDeleteStudent(context, ids) {
+			console.log("studentstore.addManagerForm -> ids:", ids);
 			return new Promise((resolve, reject) => {
 				axios.post('http://localhost:3000/student/batchDelete', { ids: ids }).then((data) => {
 					context.dispatch('findAllStudents');

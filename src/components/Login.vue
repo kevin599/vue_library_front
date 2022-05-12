@@ -7,6 +7,7 @@
         :rules="loginFormRules"
         :model="loginForm"
         ref="loginFormRef"
+        status-icon="true"
       >
         <div class="title">登 录 界 面</div>
         <!-- 用户名 -->
@@ -26,6 +27,23 @@
             type="password"
             placeholder="请输入密码"
           ></el-input>
+        </el-form-item>
+        <!-- 验证码 -->
+        <el-form-item prop="validate">
+          <el-row :gutter="30">
+            <el-col :span="14">
+              <el-input
+                v-model="loginForm.validate"
+                class="validate-code"
+                placeholder="验证码"
+              ></el-input>
+            </el-col>
+            <el-col :span="6">
+              <div class="code" @click="refreshCode">
+                <s-identify :identifyCode="identifyCode"></s-identify>
+              </div>
+            </el-col>
+          </el-row>
         </el-form-item>
         <!-- 按钮 -->
         <el-form-item class="btn">
@@ -53,44 +71,82 @@ export default {
   name: "Login",
 
   data() {
+    var check_identify = (rule, value, callback) => {
+      console.log(value);
+        if (value !== this.identifyCode) {
+          callback(new Error('验证码错误，请重新输入!'));
+          this.refreshCode();
+          this.loginForm.validate = '';
+        } else {
+          callback();
+        }
+      };
     return {
+      identifyCodes: "1234567890",
+      identifyCode: "",
       loginForm: {
-        // admin
-        // id: "001",
-        // password: "admin",
-        // user
-        id: "111",
-        password: "user",
-        // id: "",
-        // password: "",
+        id: "",
+        password: "",
+        validate: "",
       },
 
       loginFormRules: {
         id: [
           { required: true, message: "请输入登录名称", trigger: "blur" },
           {
-            min: 3,
-            max: 10,
-            message: "长度在 3 到 10 个字符",
+            min: 10,
+            max: 13,
+            message: "长度在 10 到 13 个字符",
             trigger: "blur",
           },
         ],
         password: [
           { required: true, message: "请输入登录密码", trigger: "blur" },
           {
-            min: 3,
-            max: 10,
-            message: "长度在 3 到 10 个字符",
+            min: 6,
+            max: 12,
+            message: "长度在 6 到 12 个字符",
             trigger: "blur",
           },
+        ],
+        validate: [
+          {
+            required: true,
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+          { validator: check_identify, trigger: 'blur' }
         ],
       },
     }
   },
+  mounted() {
+    this.identifyCode = ""
+    this.makeCode(this.identifyCodes, 4)
+  },
   methods: {
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode +=
+          this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
+      }
+      console.log(this.identifyCode)
+    },
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    //刷新验证码
+    refreshCode() {
+      this.identifyCode = ""
+      this.makeCode(this.identifyCodes, 4)
+    },
     //点击重置按钮 resetFields():对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
     loginFormCancel() {
       this.$refs.loginFormRef.resetFields()
+    },
+    // 注册
+    register() {
+      this.$router.push("/register")
     },
     //
     loginFormLogin() {
@@ -112,14 +168,14 @@ export default {
                 message: "用户不存在",
               })
               console.log("该用户不存在")
-              return 
+              return
             } else if (response.data == 0) {
               this.$message({
                 type: "error",
                 message: "密码错误",
               })
               console.log("密码错误")
-              return 
+              return
             } else if (response.data == "admin") {
               console.log(response.data)
               //跳转到管理员首页
@@ -166,7 +222,7 @@ export default {
 }
 .login_box {
   width: 450px;
-  height: 350px;
+  height: 450px;
   background-color: rgba(230, 230, 230, 0.76);
   position: absolute;
   left: 50%;
@@ -221,6 +277,11 @@ export default {
   /* font-weight: 900; */
   font-size: 2rem;
   margin-bottom: 40px;
-  color: #fff;
+  /* color: #fff; */
+  color: #203d8d;
 }
+.validate-code{
+  margin-right: 20px;
+}
+
 </style>

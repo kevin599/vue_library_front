@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       keywords: "",
-      pageSize: 8,
+      pageSize: 9,
       currentPage: 1,
     }
   },

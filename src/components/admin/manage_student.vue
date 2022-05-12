@@ -9,7 +9,14 @@
           @change="findQuery"
         >
         </el-input>
+        
       </el-col>
+      <el-button
+        type="primary"
+        @click="addManagerDialog = true"
+        style="float: right; margin-right: 80px"
+        >添加管理员</el-button
+      >
       <!-- <el-col :span="18"> </el-col> -->
     </el-row>
     <el-row class="tabletop" style="text-align: center">
@@ -31,7 +38,7 @@
           <el-table-column sortable prop="user_name" label="姓名"> </el-table-column>
           <el-table-column sortable prop="user_roles" :formatter="user_roles_format" label="角色" width="100"></el-table-column>
           <el-table-column sortable prop="user_sex" label="性别" width="80"></el-table-column>
-          <el-table-column sortable prop="user_department" width="120" label="专业"> </el-table-column>
+          <el-table-column sortable prop="user_department" width="120" label="专业/部门"> </el-table-column>
           <el-table-column sortable prop="user_class" label="班级"> </el-table-column>
           </el-table-column>
           <el-table-column prop="user_mobile" width="200" label="手机号码">
@@ -70,32 +77,72 @@
       center
       width="40%"
     >
-      <el-form :model="form">
+      <el-form :model="form" label-position="left" label-width="80px" :rules="rules" status-icon>
         <el-form-item label="ID" class="row" >
           <el-input v-model="form.user_id" style="width: 400px" disabled></el-input>
         </el-form-item>
-        <el-form-item label="姓名" class="row">
+        <el-form-item label="姓名" class="row" prop="user_name">
           <el-input v-model="form.user_name" style="width: 400px"></el-input>
         </el-form-item>
         <!-- <el-form-item label="角色" class="row">
           <el-input v-model="" style="width: 400px"></el-input>
         </el-form-item> -->
-        <el-form-item label="性别" class="row">
+        <!-- <el-form-item label="性别" class="row">
           <el-input v-model="form.user_sex" style="width: 400px"></el-input>
+        </el-form-item> -->
+        <el-form-item label="性别" prop="user_sex">
+          <el-select v-model="form.user_sex" placeholder="请选择性别">
+            <el-option label="男" value="男"></el-option>
+            <el-option label="女" value="女"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="专业" class="row">
+        <el-form-item label="专业/部门" class="row">
           <el-input v-model="form.user_department" style="width: 400px"></el-input>
         </el-form-item>
         <el-form-item label="班级" class="row">
           <el-input v-model="form.user_class" style="width: 400px"></el-input>
         </el-form-item>
-        <el-form-item label="手机号码" class="row">
+        <el-form-item label="手机号码" class="row" prop="user_mobile">
           <el-input v-model="form.user_mobile" style="width: 400px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+  <!-- 添加管理员对话框 -->
+    <el-dialog title="添加管理员用户" :visible.sync="addManagerDialog">
+      <el-form label-position="left" label-width="100px" :model="addManagerForm" status-icon :rules="rules" ref="addManagerForm">
+        <el-form-item label="管理员ID" prop="user_id">
+          <el-input v-model="addManagerForm.user_id" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="管理员姓名" prop="user_name">
+          <el-input v-model="addManagerForm.user_name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="user_password">
+          <el-input v-model="addManagerForm.user_password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="check_user_password">
+          <el-input v-model="addManagerForm.check_user_password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="user_mobile">
+          <el-input v-model="addManagerForm.user_mobile" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="user_sex">
+          <el-select v-model="addManagerForm.user_sex" placeholder="请选择性别">
+            <el-option label="男" value="男"></el-option>
+            <el-option label="女" value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="部门" >
+          <el-input v-model="addManagerForm.user_department" autocomplete="off"></el-input>
+        </el-form-item>
+        
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addManagerDialog = false">取 消</el-button>
+        <el-button type="primary" @click="addManager('addManagerForm')">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -109,43 +156,91 @@ export default {
     ...mapGetters(["students"]),
   },
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"))
+      } else {
+        if (this.addManagerForm.check_user_password !== "") {
+          this.$refs.addManagerForm.validateField("check_user_password")
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"))
+      } else if (value !== this.addManagerForm.user_password) {
+        callback(new Error("两次输入密码不一致!"))
+      } else {
+        callback()
+      }
+    }
+    var check_user_id = (rules, value, callback) => {
+      this.$http
+        .post("http://localhost:3000/register/register_check_user_id", {
+          user_id: value,
+        })
+        .then((response) => {
+          //   console.log("register,check_user_id,line123:", response.data)
+          if (response.data == -1) {
+            callback()
+          } else {
+            callback("该用户ID已被注册")
+          }
+        })
+    }
     return {
-      users: [
-        {
-          id: "1",
-          name: "张三",
-          mobile: "13888888888",
-          department: "计算机学院",
-          sex: "男",
-          class: "2班",
-        },
-        {
-          id: "2",
-          name: "李四",
-          mobile: "13888888888",
-          department: "土木工程学院",
-          sex: "男",
-          class: "1班",
-        },
-        {
-          id: "3",
-          name: "王五",
-          mobile: "13888888888",
-          department: "外语学院",
-          sex: "女",
-          class: "21班",
-        },
-        {
-          id: "4",
-          name: "赵六",
-          mobile: "13888888888",
-          department: "会计学院",
-          sex: "女",
-          class: "6班",
-        },
-      ],
+      addManagerDialog: false,
+      addManagerForm: {
+        user_id: "admin100000",
+        user_name: "admin",
+        user_password: "123456",
+        check_user_password: "123456",
+        user_mobile: "13510000000",
+        user_sex:"",
+        user_department:""
+      },
+      rules: {
+        user_password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+          {
+            min: 6,
+            max: 12,
+            message: "密码长度在 6 到 12 个字符",
+            trigger: "blur",
+          },
+          { validator: validatePass, trigger: "blur" },
+        ],
+        check_user_password: [
+          { required: true, message: "请再次输入密码", trigger: "blur" },
+          { validator: validatePass2, trigger: "blur" },
+        ],
+        user_id: [
+          { required: true, message: "请输入注册ID", trigger: "blur" },
+          {
+            min: 10,
+            max: 13,
+            message: "长度在 10 到 13 个字符",
+            trigger: "blur",
+          },
+          { validator: check_user_id, trigger: "blur" },
+        ],
+        user_name: [
+          { required: true, message: "请输入用户姓名", trigger: "blur" },
+        ],
+        user_mobile: [
+          { required: true, message: "请输入联系电话", trigger: "blur" },
+          { min: 11, max: 11, message: "请输入11位手机号码", trigger: "blur" },
+          {
+            pattern:
+              /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+            message: "请输入正确的手机号码",
+          },
+        ],
+        user_sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+      },
       keywords: "",
-      pageSize: 10,
+      pageSize: 8,
       currentPage: 1,
       dialogFormVisible: false,
       dialogFormVisiblesave: false,
@@ -209,6 +304,7 @@ export default {
           let ids = [row.user_id]
           this.batchDeleteStudent(ids)
             .then((data) => {
+              this.findAllStudents()
               this.$message({
                 type: "success",
                 message: "删除成功!",
@@ -247,7 +343,31 @@ export default {
               });
             }
           },
+          // 添加管理员
+          addManager(addManagerForm){
+            this.addManagerDialog = false;
+            console.log('添加确认',this.addManagerForm);
+            this.$refs[addManagerForm].validate((valid) => {
+        if (valid) {
+          // console.log(this.ruleForm)
+          this.register_manager(this.addManagerForm).then(() => {
+            this.findAllStudents()
+            this.$message({
+              type:'success',
+              message:'管理员注册成功！'
+            })
+          })
+        } else {
+          this.$message({
+            type: "error",
+            message: "请填写完整信息",
+          })
+          return false
+        }
+      })
+          },
     ...mapActions([
+      "register_manager",
       "findAllStudents",
       "saveStudent",
       "updateStudent",
@@ -272,5 +392,8 @@ export default {
 
 .row {
   margin-left: 18px;
+}
+.el-form-item--feedback .el-input__validateIcon {
+    color: #67c23a;
 }
 </style>

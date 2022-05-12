@@ -84,6 +84,7 @@ export default {
         },
         // 学生归还图书
         returnBook(context, form) {
+            console.log('borrowStore.js line72', form);
             return new Promise((resolve, reject) => {
                 axios.post('http://localhost:3000/bookstudent/returnbook', form).then((data) => {
                     // context.dispatch('findStudentRecord');
