@@ -15,8 +15,8 @@ npm run serve
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 后端仓库
+[click here to Jump](https://github.com/kevin599/library_back).
 
 ### 项目截图
 #### 登录界面
